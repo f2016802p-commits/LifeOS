@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeOS</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#07120d;color:#fff}
+header{background:#14532d;padding:18px;text-align:center}
+nav{position:fixed;bottom:0;left:0;right:0;background:#102117;display:flex;justify-content:space-around;padding:10px 0}
+nav button{background:none;border:none;color:#9fe3b3;font-size:12px}
+.page{display:none;padding:16px 16px 80px}
+.active{display:block}
+.card{background:#122118;border-radius:16px;padding:16px;margin-bottom:14px}
+.score{font-size:42px;color:#4ade80;font-weight:bold;text-align:center}
+.row{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+input[type=checkbox]{transform:scale(1.2)}
+input[type=range]{width:100%}
+button.save{width:100%;padding:14px;background:#16a34a;color:white;border:none;border-radius:10px}
+</style>
+</head>
+<body>
+
+<header>
+<h2>🌍 LifeOS</h2>
+<div>Fitness • UPSC • IGNOU • House • Adventure</div>
+</header>
+
+<div id="home" class="page active">
+  <div class="card">
+    <div>Today's Focus Score</div>
+    <div id="score" class="score">0 / 100</div>
+  </div>
+
+  <div class="card">
+    <div class="row"><span>⚡ Energy</span><span id="energyLabel">3 / 5</span></div>
+    <input id="energy" type="range" min="1" max="5" value="3">
+  </div>
+
+  <div class="card">
+    <div class="row"><span>📵 Screen Time</span><span id="screenLabel">2h</span></div>
+    <input id="screen" type="range" min="0" max="8" value="2">
+  </div>
+</div>
+
+<div id="fitness" class="page">
+  <div class="card"><h3>🏋 Fitness Tracker</h3>
+    <label><input class="task" data-points="12" type="checkbox"> Gym</label><br>
+    <label><input class="task" data-points="12" type="checkbox"> Run</label><br>
+    <label><input class="task" data-points="8" type="checkbox"> Cycle</label><br>
+    <label><input class="task" data-points="8" type="checkbox"> Stretch</label>
+  </div>
+</div>
+
+<div id="study" class="page">
+  <div class="card"><h3>📚 UPSC + IGNOU</h3>
+    <label><input class="task" data-points="15" type="checkbox"> UPSC (60 min)</label><br>
+    <label><input class="task" data-points="10" type="checkbox"> Current Affairs</label><br>
+    <label><input class="task" data-points="15" type="checkbox"> IGNOU Economics</label>
+  </div>
+</div>
+
+<div id="house" class="page">
+  <div class="card"><h3>🏠 House Management</h3>
+    <label><input class="task" data-points="5" type="checkbox"> Cooked Today</label><br>
+    <label><input class="task" data-points="5" type="checkbox"> Utensils Done</label><br>
+    <label><input class="task" data-points="5" type="checkbox"> Cleaning</label>
+  </div>
+</div>
+
+<div id="goals" class="page">
+  <div class="card"><h3>🌍 Adventure Goals</h3>
+    <label><input type="checkbox"> Half Marathon</label><br>
+    <label><input type="checkbox"> Scuba Diving</label><br>
+    <label><input type="checkbox"> Skydiving</label><br>
+    <label><input type="checkbox"> Himalayan Trek</label>
+  </div>
+</div>
+
+<div class="page active">
+  <button class="save" onclick="save()">💾 Save Today's Progress</button>
+</div>
+
+<nav>
+  <button onclick="show('home')">🏠 Home</button>
+  <button onclick="show('fitness')">💪 Fitness</button>
+  <button onclick="show('study')">📚 Study</button>
+  <button onclick="show('house')">🏠 House</button>
+  <button onclick="show('goals')">🌍 Goals</button>
+</nav>
+
+<script>
+const tasks=document.querySelectorAll('.task');
+const energy=document.getElementById('energy');
+const screen=document.getElementById('screen');
+
+function update(){
+  let score=energy.value*4;
+  tasks.forEach(t=>{if(t.checked)score+=Number(t.dataset.points);});
+  if(screen.value<=2)score+=10;
+  if(score>100)score=100;
+  document.getElementById('score').textContent=score+' / 100';
+  document.getElementById('energyLabel').textContent=energy.value+' / 5';
+  document.getElementById('screenLabel').textContent=screen.value+'h';
+}
+
+function save(){
+  const data={
+    energy:energy.value,
+    screen:screen.value,
+    score:document.getElementById('score').textContent,
+    date:new Date().toLocaleDateString()
+  };
+  localStorage.setItem('lifeos-data',JSON.stringify(data));
+  alert('Saved! 🌱');
+}
+
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+tasks.forEach(t=>t.onchange=update);
+energy.oninput=update;
+screen.oninput=update;
+update();
+</script>
+
+</body>
+</html>
